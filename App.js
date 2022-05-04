@@ -6,13 +6,22 @@ import {
   KeyboardAvoidingView,
   TextInput,
   TouchableOpacity,
+  Keyboard,
 } from 'react-native'
 import Task from './components/Task'
 
 export default function App() {
   const [task, setTask] = useState()
+  const [taskItems, setTaskItems] = useState([])
   const handleAddTask = () => {
-    console.log(task)
+    Keyboard.dismiss()
+    setTaskItems([...taskItems, task])
+    setTask(null)
+  }
+  const completeTask = (index) => {
+    let itemsCopy = [...taskItems]
+    itemsCopy.splice(index, 1)
+    setTaskItems(itemsCopy)
   }
   return (
     <View style={styles.container}>
@@ -22,8 +31,16 @@ export default function App() {
 
         <View style={styles.items}>
           {/* Tasks place */}
-          <Task text={'Task 1'} />
-          <Task text={'Task 2'} />
+          {taskItems.map((item, index) => {
+            return (
+              <TouchableOpacity
+                key={index}
+                onPress={(index) => completeTask(index)}
+              >
+                <Task text={item} />
+              </TouchableOpacity>
+            )
+          })}
         </View>
       </View>
       {/* Write a task */}
